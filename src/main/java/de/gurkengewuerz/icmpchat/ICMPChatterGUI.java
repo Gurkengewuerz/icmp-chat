@@ -6,6 +6,7 @@ import de.gurkengewuerz.icmpchat.helper.ICMPChatBox;
 import de.gurkengewuerz.icmpchat.helper.ICMPSession;
 import de.gurkengewuerz.icmpchat.object.Device;
 import de.gurkengewuerz.icmpchat.object.ICMPInterface;
+import de.gurkengewuerz.icmpchat.tray.ChatTray;
 import org.apache.commons.io.IOUtils;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNativeException;
@@ -43,6 +44,7 @@ public class ICMPChatterGUI {
     private JScrollPane scrollPane;
     private JLabel countleft;
 
+    private ChatTray tray;
     private ICMPChatBox chatHelper;
     private PcapNetworkInterface device;
     private PcapHandle readHandle;
@@ -54,6 +56,7 @@ public class ICMPChatterGUI {
 
     public ICMPChatterGUI() {
         chatHelper = new ICMPChatBox(chatBox, scrollPane);
+        tray = new ChatTray();
 
         try {
             List<PcapNetworkInterface> deviceList = Pcaps.findAllDevs();
@@ -101,7 +104,7 @@ public class ICMPChatterGUI {
                     sendHandle = device.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
                     contunuisReader = device.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
                     session = new ICMPSession(sendHandle, readHandle, deviceData);
-                    receiver = new ICMPReceiver(contunuisReader, deviceData, chatHelper);
+                    receiver = new ICMPReceiver(contunuisReader, deviceData, chatHelper, tray);
                     receiverThread = new Thread(() -> receiver.start());
                     receiverThread.start();
                 } catch (Exception ex) {
