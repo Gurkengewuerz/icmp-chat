@@ -60,6 +60,7 @@ public class ICMPChatterGUI {
 
         try {
             List<PcapNetworkInterface> deviceList = Pcaps.findAllDevs();
+            targetNetwork.addItem(new ICMPInterface("", null));
             for (PcapNetworkInterface networkInterface : deviceList) {
                 targetNetwork.addItem(new ICMPInterface(networkInterface.getDescription(), networkInterface));
             }
@@ -88,7 +89,7 @@ public class ICMPChatterGUI {
         targetNetwork.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 ICMPInterface item = (ICMPInterface) e.getItem();
-
+                if (item.getValue() == null) return;
                 //initialize Jpcap
                 try {
                     if (receiver != null) {
